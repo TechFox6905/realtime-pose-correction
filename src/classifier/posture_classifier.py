@@ -38,7 +38,7 @@ class PostureClassifier:
         self.feature_order = self.metadata["feature_order"]
         self.class_labels = set(self.metadata["classes"])
 
-    def predict(self, features: dict):
+    def predict(self, features: dict) -> str:
         """
         Predict posture class from feature dictionary.
 
