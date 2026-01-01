@@ -17,6 +17,7 @@ dependencies = [
   "opencv-python",
   "torch",
   "mediapipe",
+  "joblib",
 ]
 
 [project.optional-dependencies]
