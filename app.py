@@ -47,6 +47,8 @@ def main(camera_index=0):
             # -----------------------------
             detection = person_detector.detect(frame)
             if detection is None:
+                # 🔧 DO NOW FIX #1: reset stateful features
+                feature_extractor.reset()
                 last_feedback = ""
                 render(frame, fps_counter.fps, "No person detected")
                 continue
@@ -96,6 +98,8 @@ def main(camera_index=0):
                 break
 
     finally:
+        # 🔧 DO NOW FIX #2: clean MediaPipe resources
+        pose_estimator.close()
         cap.release()
         cv2.destroyAllWindows()
 
