@@ -9,6 +9,13 @@ class PoseEstimator:
     """
     MediaPipe Pose wrapper.
     Extracts normalized pose landmarks from a cropped person frame.
+
+    visibility_threshold: minimum MediaPipe landmark visibility to accept a joint.
+    Used to avoid unstable features.
+
+    NOTE:
+    - Input frame is expected in BGR (OpenCV default).
+    - Landmarks are normalized (0–1) relative to the CROPPED frame dimensions.
     """
 
     def __init__(
@@ -19,6 +26,7 @@ class PoseEstimator:
         min_tracking_confidence: float = 0.5,
         visibility_threshold: float = 0.5,
     ):
+        # static_image_mode=False enables temporal tracking for video streams
         self.visibility_threshold = visibility_threshold
 
         self.pose = mp.solutions.pose.Pose(
@@ -76,3 +84,7 @@ class PoseEstimator:
         return {
             "landmarks": extracted
         }
+
+    def close(self):
+        """Release MediaPipe native resources."""
+        self.pose.close()
