@@ -15,6 +15,7 @@ authors = [
 
 dependencies = [
   "opencv-python",
+  "torch",
 ]
 
 [project.optional-dependencies]
