@@ -1,0 +1,12 @@
+{
+  "model_name": "random_forest_squat_posture",
+  "classes": ["correct", "knees_caving_in", "forward_lean"],
+  "feature_order": [
+    "knee_angle",
+    "knee_to_toe_ratio",
+    "hip_angle",
+    "torso_angle",
+    "depth_ratio"
+  ],
+  "version": "v1"
+}

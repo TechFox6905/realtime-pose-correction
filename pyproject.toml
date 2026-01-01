@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pose-correction"
+version = "0.1.0"
+description = "Real-time pose correction system"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Prathamesh", email = "prathamesh.gharat07@gmail.com" }
+]
+
+dependencies = [
+  "numpy",
+  "opencv-python",
+  "torch",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
