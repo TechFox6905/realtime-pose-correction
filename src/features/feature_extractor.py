@@ -95,13 +95,19 @@ class FeatureExtractor:
         current_hip_y = mid_hip[1]
 
         # Capture standing height only when torso is upright
-        if self.standing_hip_y is None and torso_angle < 10:
-            self.standing_hip_y = current_hip_y
+        if self.standing_hip_y is None:
+            if knee_angle > 165 and torso_angle < 10:
+                self.standing_hip_y = current_hip_y
+            else:
+                return None
+
 
         if self.standing_hip_y is None:
             return None
 
         depth_ratio = (current_hip_y - self.standing_hip_y) / leg_length
+        depth_ratio = float(np.clip(depth_ratio, 0.0, 1.0))
+
 
         return {
             "knee_angle": float(knee_angle),
