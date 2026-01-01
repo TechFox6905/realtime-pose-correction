@@ -14,11 +14,14 @@ authors = [
 ]
 
 dependencies = [
+  "pandas",
+  "seaborn",
   "opencv-python",
   "torch",
   "mediapipe",
   "joblib",
   "ultralytics",
+  "tqdm",
 ]
 
 [project.optional-dependencies]
