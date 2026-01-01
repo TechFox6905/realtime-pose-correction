@@ -42,13 +42,16 @@ class PersonDetector:
 
         height, width, _ = frame.shape
 
-        # YOLOv8 inference (CPU-friendly)
+        # YOLOv8 inference (GPU-Enabled)
         results = self.model(
-            frame,
-            conf=self.conf_threshold,
-            iou=self.iou_threshold,
-            verbose=False,
-        )
+        frame,
+        device=0,          # 👈 FORCE CUDA (RTX 4050)
+        imgsz=640,
+        conf=self.conf_threshold,
+        iou=self.iou_threshold,
+        verbose=False,
+    )
+
 
         if not results or len(results[0].boxes) == 0:
             return None

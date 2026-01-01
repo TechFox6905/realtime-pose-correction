@@ -9,15 +9,13 @@ description = "Real-time pose correction system"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
+
 authors = [
   { name = "Prathamesh Gharat", email = "prathamesh.gharat07@gmail.com" }
 ]
 
 dependencies = [
-  "pandas",
-  "seaborn",
   "opencv-python",
-  "torch",
   "mediapipe",
   "joblib",
   "ultralytics",
