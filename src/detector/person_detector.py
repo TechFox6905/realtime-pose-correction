@@ -7,6 +7,9 @@ import numpy as np
 class PersonDetector:
     """
     YOLOv5-based single-person detector.
+
+    conf_threshold: minimum YOLO confidence for accepting person detection.
+    NOTE: `frame` is expected to be BGR (OpenCV default).
     """
 
     def __init__(
@@ -16,7 +19,12 @@ class PersonDetector:
         device: str | None = None,
     ):
         self.conf_threshold = conf_threshold
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+
+        # Safe device selection
+        if device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
         # Load model ONCE
         self.model = torch.hub.load(
@@ -38,7 +46,8 @@ class PersonDetector:
             dict with keys: bbox, cropped_frame
             or None if no person detected
         """
-        if frame is None:
+        # Frame validation
+        if frame is None or frame.ndim != 3:
             return None
 
         height, width, _ = frame.shape
