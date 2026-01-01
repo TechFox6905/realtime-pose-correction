@@ -1,39 +1,29 @@
 # src/detector/person_detector.py
 
-import torch
 import numpy as np
+from ultralytics import YOLO
 
 
 class PersonDetector:
     """
-    YOLOv5-based single-person detector.
+    YOLOv8n-based single-person detector (CPU optimized).
 
-    conf_threshold: minimum YOLO confidence for accepting person detection.
-    NOTE: `frame` is expected to be BGR (OpenCV default).
+    NOTE:
+    - Input frame expected in BGR format (OpenCV default)
+    - Output contract identical to YOLOv5 version
     """
 
     def __init__(
         self,
-        model_name: str = "yolov5s",
+        model_path: str = "yolov8n.pt",
         conf_threshold: float = 0.3,
-        device: str | None = None,
+        iou_threshold: float = 0.5,
     ):
         self.conf_threshold = conf_threshold
-
-        # Safe device selection
-        if device is None:
-            self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        else:
-            self.device = device
+        self.iou_threshold = iou_threshold
 
         # Load model ONCE
-        self.model = torch.hub.load(
-            "ultralytics/yolov5",
-            model_name,
-            pretrained=True,
-        )
-        self.model.to(self.device)
-        self.model.eval()
+        self.model = YOLO(model_path)
 
         # COCO person class id
         self.person_class_id = 0
@@ -52,26 +42,34 @@ class PersonDetector:
 
         height, width, _ = frame.shape
 
-        # Inference
-        results = self.model(frame)
-        detections = results.xyxy[0].cpu().numpy()
+        # YOLOv8 inference (CPU-friendly)
+        results = self.model(
+            frame,
+            conf=self.conf_threshold,
+            iou=self.iou_threshold,
+            verbose=False,
+        )
 
-        # Filter persons by class & confidence
-        persons = [
-            d for d in detections
-            if int(d[5]) == self.person_class_id and d[4] >= self.conf_threshold
-        ]
+        if not results or len(results[0].boxes) == 0:
+            return None
+
+        boxes = results[0].boxes
+
+        persons = []
+        for box in boxes:
+            cls_id = int(box.cls.item())
+            if cls_id == self.person_class_id:
+                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                persons.append((x1, y1, x2, y2))
 
         if not persons:
             return None
 
-        # Select largest bounding box (by area)
-        def bbox_area(det):
-            x1, y1, x2, y2 = det[:4]
-            return (x2 - x1) * (y2 - y1)
+        # Select largest bounding box
+        def area(b):
+            return (b[2] - b[0]) * (b[3] - b[1])
 
-        best_det = max(persons, key=bbox_area)
-        x1, y1, x2, y2 = map(int, best_det[:4])
+        x1, y1, x2, y2 = map(int, max(persons, key=area))
 
         # Clip to frame
         x1 = max(0, x1)
