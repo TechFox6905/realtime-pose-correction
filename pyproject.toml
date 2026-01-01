@@ -14,7 +14,7 @@ authors = [
 ]
 
 dependencies = [
-  "cv2",
+  "opencv-python",
 ]
 
 [project.optional-dependencies]
