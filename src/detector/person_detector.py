@@ -15,7 +15,7 @@ class PersonDetector:
     def __init__(
         self,
         model_name: str = "yolov5s",
-        conf_threshold: float = 0.4,
+        conf_threshold: float = 0.3,
         device: str | None = None,
     ):
         self.conf_threshold = conf_threshold

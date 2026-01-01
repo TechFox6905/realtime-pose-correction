@@ -1,8 +1,8 @@
-# app_run1_detector_only.py
-
 import cv2
 from src.detector.person_detector import PersonDetector
 from src.utils.fps import FPSCounter
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 def main(camera_index=0):
@@ -20,7 +20,7 @@ def main(camera_index=0):
                 break
 
             fps_counter.update()
-
+            frame = cv2.resize(frame, (640, 480))
             detection = detector.detect(frame)
 
             if detection is not None:
